@@ -1,0 +1,17 @@
+name: Upterm Terminal
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upterm:
+    name: windows-terminal
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Setup upterm session
+        uses: owenthereal/action-upterm@v2
+        with:
+          limit-access-to-actor: true
+          allow-exec: true
