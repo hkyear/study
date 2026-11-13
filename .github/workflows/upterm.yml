@@ -3,9 +3,6 @@ name: Upterm Terminal
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   upterm:
     name: windows-terminal
@@ -19,18 +16,16 @@ jobs:
         with:
           detached: true
           wait-timeout-minutes: 360
-          limit-access-to-actor: false
+          limit-access-to-actor: true
           allow-exec: true
 
       - name: Publish ssh command
         shell: bash
         env:
-          CONN: ${{ steps.upterm.outputs.ssh-command }}
-        run: |
-          printf '%s\n' "$CONN" > .conn.txt
-          printf 'ssh command: %s\n' "$CONN"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f .conn.txt
-          git commit -m "publish ssh command"
-          git push
+          SSH_COMMAND: ${{ steps.upterm.outputs.ssh-command }}
+        run: printf '%s\n' "$SSH_COMMAND" > ssh-command.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ssh-command
+          path: ssh-command.txt
